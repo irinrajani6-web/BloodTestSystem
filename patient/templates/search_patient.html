@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Patient</title>
+
+    <style>
+
+        body{
+            font-family:Arial;
+            background:#f4f7fc;
+            padding:40px;
+        }
+
+        h1{
+            color:#4f46e5;
+        }
+
+        input{
+            padding:10px;
+            width:250px;
+        }
+
+        button{
+            padding:10px 20px;
+            background:#4f46e5;
+            color:white;
+            border:none;
+        }
+
+        .card{
+            background:white;
+            padding:15px;
+            margin-top:15px;
+            border-radius:10px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.1);
+        }
+
+    </style>
+</head>
+
+<body>
+
+<h1>🔍 Search Patient</h1>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <input
+        type="text"
+        name="name"
+        placeholder="Enter patient name"
+    >
+
+    <button type="submit">
+        Search
+    </button>
+
+</form>
+
+{% for patient in patients %}
+
+<div class="card">
+
+    <h3>{{ patient.name }}</h3>
+
+    <p>Email: {{ patient.email }}</p>
+
+    <p>Age: {{ patient.age }}</p>
+
+    <p>Gender: {{ patient.gender }}</p>
+
+    <p>Contact: {{ patient.contact }}</p>
+
+</div>
+
+{% endfor %}
+
+</body>
+</html>

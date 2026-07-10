@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Blood Test System</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI, sans-serif;
+}
+
+body{
+    display:flex;
+    background:#f4f7fc;
+}
+
+.sidebar{
+    width:250px;
+    height:100vh;
+    background:#1f2937;
+    color:white;
+    position:fixed;
+    padding-top:20px;
+}
+
+.logo{
+    text-align:center;
+    font-size:24px;
+    font-weight:bold;
+    margin-bottom:30px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:15px 25px;
+    transition:0.3s;
+}
+
+.sidebar a:hover{
+    background:#374151;
+}
+
+.main{
+    margin-left:250px;
+    width:100%;
+    padding:30px;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.username{
+    font-size:18px;
+    color:#555;
+}
+
+.stats{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.stat-card{
+    background:white;
+    width:250px;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+.stat-card h2{
+    color:#4f46e5;
+    margin-bottom:10px;
+}
+
+.number{
+    font-size:35px;
+    font-weight:bold;
+}
+
+.cards{
+    margin-top:30px;
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.card{
+    background:white;
+    width:280px;
+    padding:25px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+.btn{
+    display:inline-block;
+    margin-top:15px;
+    padding:10px 20px;
+    background:#4f46e5;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+```
+<div class="logo">
+    🩸 BTS
+</div>
+
+<a href="/dashboard/">🏠 Dashboard</a>
+
+<a href="/register/">👤 Patients</a>
+    
+<a href="{% url 'search_patient' %}">🔍Search Patient</a>
+
+<a href="/appointment/">📅 Appointments</a>
+
+<a href="/report/">🩸 Reports</a>
+
+<a href="/admin/">⚙️ Admin</a>
+
+<a href="/logout/">🚪 Logout</a>
+
+
+</div>
+
+<div class="main">
+
+<div class="header">
+
+    <div>
+
+        <h1>Dashboard</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="success-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+    </div>
+
+    <div class="username">
+        Welcome, {{ request.user.username }}
+    </div>
+
+</div>
+
+<div class="stats">
+
+    <div class="stat-card">
+        <h2>Patients</h2>
+        <div class="number">{{ patient_count }}</div>
+    </div>
+
+    <div class="stat-card">
+        <h2>Appointments</h2>
+        <div class="number">{{ appointment_count }}</div>
+    </div>
+
+    <div class="stat-card">
+        <h2>Reports</h2>
+        <div class="number">{{ report_count }}</div>
+    </div>
+
+</div>
+
+<div class="cards">
+
+    <div class="card">
+        <h2>👤 Patient Registration</h2>
+        <p>Add new patients</p>
+        <a href="/register/" class="btn">Open</a>
+    </div>
+
+    <div class="card">
+        <h2>📅 Appointments</h2>
+        <p>Manage appointments</p>
+        <a href="/appointment/" class="btn">Open</a>
+    </div>
+
+    <div class="card">
+        <h2>🩸 Reports</h2>
+        <p>Blood test reports</p>
+        <a href="/report/" class="btn">Open</a>
+    </div>
+
+</div>
+<div style="margin-top:40px;">
+
+<h2 style="margin-bottom:20px;color:#4f46e5;">
+📅 Recent Appointments
+</h2>
+
+<table style="width:100%;background:white;border-radius:10px;border-collapse:collapse;box-shadow:0 4px 12px rgba(0,0,0,.1);overflow:hidden;">
+
+<tr style="background:#4f46e5;color:white;">
+    <th style="padding:15px;">Patient</th>
+    <th>Date</th>
+    <th>Time</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+
+{% for appointment in recent_appointments %}
+
+<tr>
+
+<td style="padding:15px;">
+{{ appointment.patient.name }}
+</td>
+
+<td>{{ appointment.date }}</td>
+
+<td>{{ appointment.time }}</td>
+
+<td>{{ appointment.status }}</td>
+
+<td>
+
+{% if appointment.status == "pending" %}
+
+<a href="/approve/{{ appointment.id }}/"
+style="
+background:green;
+color:white;
+padding:8px 12px;
+text-decoration:none;
+border-radius:6px;
+margin-right:5px;">
+Approve
+</a>
+
+<a href="/reject/{{ appointment.id }}/"
+style="
+background:red;
+color:white;
+padding:8px 12px;
+text-decoration:none;
+border-radius:6px;">
+Reject
+</a>
+
+{% else %}
+
+-
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="5" style="padding:20px;text-align:center;">
+No Appointments Found
+</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Patient Dashboard</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI,sans-serif;
+}
+
+body{
+background:#eef4ff;
+}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:250px;
+height:100vh;
+background:#1f2937;
+color:white;
+padding-top:25px;
+}
+
+.logo{
+text-align:center;
+font-size:28px;
+font-weight:bold;
+margin-bottom:35px;
+}
+
+.sidebar a{
+display:block;
+padding:15px 25px;
+text-decoration:none;
+color:white;
+transition:.3s;
+}
+
+.sidebar a:hover{
+background:#374151;
+}
+
+.main{
+margin-left:250px;
+padding:35px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.header h1{
+color:#2563eb;
+}
+
+.cards{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+margin-bottom:30px;
+}
+
+.card{
+background:white;
+padding:25px;
+width:260px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.card h2{
+margin-bottom:10px;
+color:#2563eb;
+}
+
+.number{
+font-size:35px;
+font-weight:bold;
+}
+
+.section{
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+margin-top:20px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+table th,
+table td{
+padding:12px;
+border-bottom:1px solid #ddd;
+text-align:left;
+}
+
+.btn{
+display:inline-block;
+margin-top:15px;
+padding:10px 18px;
+background:#2563eb;
+color:white;
+text-decoration:none;
+border-radius:8px;
+}
+
+.btn:hover{
+background:#1d4ed8;
+}
+
+.empty{
+color:gray;
+margin-top:15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+🩸 BTS
+</div>
+
+<a href="/patient-dashboard/">🏠 Dashboard</a>
+
+<a href="/appointment/">📅 Book Appointment</a>
+
+<a href="/logout/">🚪 Logout</a>
+
+</div>
+
+<div class="main">
+
+<div class="header">
+
+<div>
+<h1>Welcome, {{ patient.name }}</h1>
+<p>Blood Test Management System</p>
+</div>
+
+<div>
+<b>{{ request.user.username }}</b>
+</div>
+
+</div>
+
+<div class="cards">
+
+<div class="card">
+<h2>📅 Appointments</h2>
+<div class="number">{{ appointments|length }}</div>
+</div>
+
+<div class="card">
+<h2>🩸 Reports</h2>
+<div class="number">{{ reports|length }}</div>
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>👤 My Profile</h2>
+
+<br>
+
+<p><b>Name:</b> {{ patient.name }}</p>
+<p><b>Email:</b> {{ patient.email }}</p>
+<p><b>Age:</b> {{ patient.age }}</p>
+<p><b>Gender:</b> {{ patient.get_gender_display }}</p>
+<p><b>Contact:</b> {{ patient.contact }}</p>
+
+</div>
+
+<div class="section">
+
+<h2>📅 My Appointments</h2>
+
+{% if appointments %}
+
+<table>
+
+<tr>
+<th>Date</th>
+<th>Time</th>
+<th>Status</th>
+</tr>
+
+{% for appointment in appointments %}
+
+<tr>
+
+<td>{{ appointment.date }}</td>
+
+<td>{{ appointment.time }}</td>
+
+<td>{{ appointment.status }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% else %}
+
+<p class="empty">No appointments booked yet.</p>
+
+{% endif %}
+
+<a href="/appointment/" class="btn">
+Book Appointment
+</a>
+
+</div>
+
+<div class="section">
+
+<h2>🩸 My Reports</h2>
+
+{% if reports %}
+
+<table>
+
+<tr>
+<th>Title</th>
+<th>Description</th>
+<th>File</th>
+</tr>
+
+{% for report in reports %}
+
+<tr>
+
+<td>{{ report.title }}</td>
+
+<td>{{ report.description }}</td>
+
+<td>
+
+{% if report.file %}
+
+<a href="{{ report.file.url }}">
+Download
+</a>
+
+{% else %}
+
+No File
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% else %}
+
+<p class="empty">No reports uploaded yet.</p>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</body>
+</html>
